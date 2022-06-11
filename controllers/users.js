@@ -31,6 +31,7 @@ const uploadImg = async (req, res) => {
   }
 };
 const createUser = async (req, res) => {
+  console.log(res);
   bcrypt.hash(req.body.password, 10, (err, hash) => {
     if (err) {
       return res.status(500).json({
