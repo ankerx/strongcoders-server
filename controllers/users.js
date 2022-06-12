@@ -98,5 +98,4 @@ module.exports = {
   deleteUser,
   updateUser,
   login,
-  uploadImg,
 };
