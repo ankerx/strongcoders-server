@@ -4,7 +4,6 @@ const Workout = require("../models/workouts");
 
 const getWorkouts = async (req, res) => {
   const workouts = await Workout.find({});
-
   try {
     res.send(workouts);
   } catch (error) {
@@ -20,7 +19,7 @@ const getWorkoutsBySearch = async (req, res) => {
     });
     res.send(posts);
   } catch (error) {
-    console.log(error);
+    res.status(500).send(error);
   }
 };
 
@@ -61,7 +60,6 @@ const getWorkout = async (req, res) => {
   }
 };
 const likeWorkout = async (req, res) => {
-  console.log(req.user._id);
   try {
     const workout = await Workout.findById(req.params.id);
     if (!workout.likes.includes(req.user._id)) {
@@ -100,7 +98,6 @@ const updateWorkout = async (req, res) => {
   const workout = req.body;
   if (!mongoose.Types.ObjectId.isValid(_id))
     return res.status(404).send("There is no workout with that id");
-
   const updatedWorkout = await Workout.findByIdAndUpdate(_id, workout, {
     new: true,
   });

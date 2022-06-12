@@ -6,32 +6,14 @@ const jwt = require("jsonwebtoken");
 
 const getUsers = async (req, res) => {
   const users = await userModel.find({}).populate("createdPosts");
-
   try {
     res.send(users);
   } catch (error) {
     res.status(500).send(error);
   }
 };
-const uploadImg = async (req, res) => {
-  const { id: _id } = req.params;
-  const image = req.body.profilePicture;
-  const updatedUser = await userModel.findByIdAndUpdate(
-    _id,
-    { profilePicture: image },
-    {
-      new: true,
-    }
-  );
-  try {
-    console.log(req.body);
-    res.send(updatedUser);
-  } catch (error) {
-    console.log(error);
-  }
-};
+
 const createUser = async (req, res) => {
-  console.log(res);
   bcrypt.hash(req.body.password, 10, (err, hash) => {
     if (err) {
       return res.status(500).json({
@@ -46,7 +28,6 @@ const createUser = async (req, res) => {
       user
         .save()
         .then((result) => {
-          console.log(result);
           res.status(201).json({
             _id: user.id,
             name: user.name,
@@ -79,7 +60,6 @@ const generateToken = (id) => {
   return jwt.sign({ id }, "SECRET_KEY", { expiresIn: "15d" });
 };
 const getUser = async (req, res) => {
-  console.log(req.user);
   try {
     const user = await User.findById(req.user.id).populate("createdPosts");
     res.status(200).json({
