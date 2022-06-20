@@ -5,9 +5,14 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
 const getUsers = async (req, res) => {
-  const users = await userModel.find({}).populate("createdPosts");
+  const users = await userModel.find().populate("createdPosts");
+  const filteredUsers = users.map(({ name, createdPosts, _id }) => ({
+    name,
+    createdPosts,
+    _id,
+  }));
   try {
-    res.send(users);
+    res.send(filteredUsers);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -44,10 +49,10 @@ const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   try {
-    if (!user) return res.status(404).json({ message: "User doesn't exist" });
+    if (!user) return res.status(404).json({ message: "Invalid credentials" });
     const correctPassword = await bcrypt.compare(password, user.password);
     if (!correctPassword)
-      return res.status(400).json({ message: "Invalid password" });
+      return res.status(400).json({ message: "Invalid credentials" });
 
     res.status(200).json({ user, token: generateToken(user._id) });
   } catch (error) {
